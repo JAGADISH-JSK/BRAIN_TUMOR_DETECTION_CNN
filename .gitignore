@@ -1,0 +1,19 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# Secrets / env
+.env
+# Data and weights (too big for Git; see README for download steps)
+data/*
+!data/.gitkeep
+weights/*
+!weights/.gitkeep
+# Node
+node_modules/
+frontend/dist/
+# OS / editor
+.DS_Store
+.vscode/
