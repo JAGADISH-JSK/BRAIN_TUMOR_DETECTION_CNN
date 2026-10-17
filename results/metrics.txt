@@ -1,0 +1,17 @@
+Test accuracy (all images): 0.850
+Entropy threshold (from validation): 0.18
+Coverage (share of test images accepted): 0.785
+Test accuracy on accepted images: 0.933
+Mean uncertainty, correct predictions: 0.071
+Mean uncertainty, wrong predictions:   0.322
+
+              precision    recall  f1-score   support
+
+      glioma      0.795     0.700     0.745       100
+  meningioma      0.779     0.740     0.759       100
+     notumor      0.907     0.970     0.937       100
+   pituitary      0.900     0.990     0.943       100
+
+    accuracy                          0.850       400
+   macro avg      0.845     0.850     0.846       400
+weighted avg      0.845     0.850     0.846       400
