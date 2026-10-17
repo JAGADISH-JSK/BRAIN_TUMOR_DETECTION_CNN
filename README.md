@@ -24,12 +24,24 @@ disagree, the prediction is flagged **"Low confidence: needs expert review"** in
 
 ## Architecture
 
-```
-React (upload) -> Flask /predict -> preprocess -> MC Dropout (T passes) -> prediction + uncertainty
-                                                  -> Grad-CAM heatmap -> JSON -> React result card
+```mermaid
+flowchart LR
+    U[User] --> F[React frontend]
+    F -->|"POST /predict (image)"| B[Flask API]
+    B --> P[Preprocess to 224x224 RGB]
+    P --> M[ResNet50V2 with dropout head]
+    M -->|"T = 20 passes, dropout ON"| E[Mean probabilities and entropy]
+    M --> G[Grad-CAM heatmap]
+    E --> D{Entropy above threshold?}
+    D -->|Yes| R[Needs expert review]
+    D -->|No| C[Class and confidence]
+    R --> J[JSON response]
+    C --> J
+    G --> J
+    J --> F
 ```
 
-Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+Full explanation, training flow and code map: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ## Results
 

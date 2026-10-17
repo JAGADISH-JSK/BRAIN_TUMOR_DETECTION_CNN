@@ -1,47 +1,78 @@
 # Architecture
 
-## System
+This page explains how the project works, from training to the web app.
+(GitHub draws the diagrams below automatically.)
 
-```
-React frontend  --HTTP-->  Flask backend
- upload, preview            POST /predict
- result + heatmap             preprocess.py  (resize 224x224, RGB)
- low-confidence warning       mc_dropout.py  (T passes, dropout ON)
-                              gradcam.py     (heatmap on last conv map)
-                              decision rule  (entropy > threshold -> needs review)
-                            GET /health
-Model is loaded once at startup from weights/brain_tumor_model.keras
-```
+## 1. System overview
 
-## Model
-
-```
-Input 224x224x3 (0-255)
- -> Rescaling to [-1, 1]
- -> ResNet50V2 backbone (ImageNet, BatchNorm always in inference mode)
- -> GlobalAveragePooling2D
- -> Dense 256 ReLU
- -> Dropout 0.4   (kept ON for MC passes)
- -> Dense N softmax
+```mermaid
+flowchart LR
+    U[User] --> F[React frontend]
+    F -->|"POST /predict (image)"| B[Flask API]
+    B --> P[Preprocess to 224x224 RGB]
+    P --> M[ResNet50V2 with dropout head]
+    M -->|"T = 20 passes, dropout ON"| E[Mean probabilities and entropy]
+    M --> G[Grad-CAM heatmap]
+    E --> D{Entropy above threshold?}
+    D -->|Yes| R[Needs expert review]
+    D -->|No| C[Class and confidence]
+    R --> J[JSON response]
+    C --> J
+    G --> J
+    J --> F
 ```
 
-## Prediction logic
+The model is loaded once when the Flask server starts, not on every request.
+
+## 2. Training and evaluation flow
+
+```mermaid
+flowchart TD
+    A[MRI dataset: Training and Testing folders] --> B[Hold out 15 percent of Training for validation]
+    B --> C[Augment training images only]
+    C --> D[Stage 1: train the new head, backbone frozen]
+    D --> E[Stage 2: fine-tune the top 30 backbone layers]
+    E --> F[Save the best model by validation accuracy]
+    F --> G[Choose the entropy threshold on validation data]
+    G --> H[Report final results on the Testing folder]
+```
+
+## 3. Model
 
 ```
-for t in 1..T:  p_t = model(x, training=True)
-p_mean  = mean(p_t)
-class   = argmax(p_mean)
-entropy = -sum(p_mean * log p_mean) / log(N)      # normalised to [0, 1]
-needs_review = entropy > threshold                # threshold chosen on validation data
+Input 224 x 224 x 3 (pixel values 0-255)
+  -> Rescaling to [-1, 1]
+  -> ResNet50V2 backbone (ImageNet weights, BatchNorm always in inference mode)
+  -> GlobalAveragePooling2D
+  -> Dense 256, ReLU
+  -> Dropout 0.4        (stays ON during the MC passes)
+  -> Dense N, softmax   (one output per class)
 ```
 
-## Training
+## 4. Prediction logic (Monte Carlo Dropout)
 
-1. Stage 1: backbone frozen, train the head (Adam 1e-3)
-2. Stage 2: unfreeze the last 30 backbone layers (BatchNorm stays frozen), Adam 1e-5
-3. Augmentation on training data only; validation is split from Training; Testing is untouched
+```
+for t in 1..T:  p_t = model(image, training=True)      # dropout active
+p_mean       = mean(p_t)
+predicted    = argmax(p_mean)
+uncertainty  = entropy(p_mean) / log(N)                # scaled to 0..1
+needs_review = uncertainty > threshold                 # threshold chosen on validation data
+```
 
-## Why BatchNorm stays frozen
+## 5. Why BatchNorm stays frozen
 
-If BatchNorm ran in training mode during MC passes, batch statistics would change every pass and
-add noise unrelated to dropout. The backbone is therefore called with `training=False`.
+If BatchNorm ran in training mode during the MC passes, its statistics would change on every pass
+and add noise that has nothing to do with dropout. The backbone is therefore always called with
+`training=False`.
+
+## 6. Code map
+
+| Path | Role |
+|---|---|
+| `backend/model/build.py` | Builds the ResNet50V2 model, fine-tuning helper |
+| `backend/model/mc_dropout.py` | T stochastic passes and the entropy score |
+| `backend/model/gradcam.py` | Heatmap on the last convolutional map |
+| `backend/app.py` | Flask API: `/predict`, `/health` |
+| `training/train.py` | Two-stage training |
+| `training/evaluate.py` | Metrics, accuracy vs. coverage, uncertainty plots |
+| `frontend/` | React upload page and result view |
