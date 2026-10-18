@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
@@ -8,6 +8,8 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const timer = useRef(null);
 
   useEffect(() => {
     if (!file) return setPreview(null);
@@ -16,10 +18,15 @@ export default function App() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  useEffect(() => () => clearInterval(timer.current), []);
+
   async function analyze() {
     setBusy(true);
     setError("");
     setResult(null);
+    setElapsed(0);
+    const started = Date.now();
+    timer.current = setInterval(() => setElapsed(Math.round((Date.now() - started) / 1000)), 500);
     try {
       const body = new FormData();
       body.append("image", file);
@@ -32,6 +39,7 @@ export default function App() {
         ? "Cannot reach the API. Start the backend with: python -m backend.app"
         : e.message);
     } finally {
+      clearInterval(timer.current);
       setBusy(false);
     }
   }
@@ -54,7 +62,7 @@ export default function App() {
           <span>{file ? file.name : "Choose an MRI image (JPG or PNG)"}</span>
         </label>
         <button onClick={analyze} disabled={!file || busy}>
-          {busy ? "Analyzing…" : "Analyze image"}
+          {busy ? `Analyzing… ${elapsed}s` : "Analyze image"}
         </button>
         {error && <p className="error" role="alert">{error}</p>}
       </section>
@@ -106,6 +114,9 @@ export default function App() {
                 <li key={name}><span>{name}</span><span>{pct(p)}</span></li>
               ))}
           </ul>
+          {result.seconds !== undefined && (
+            <p className="muted took">Prediction took {result.seconds} s</p>
+          )}
         </section>
       )}
 

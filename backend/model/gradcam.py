@@ -1,9 +1,15 @@
-"""Grad-CAM on the last convolutional feature map of the ResNet50V2 backbone."""
-import base64
+"""Grad-CAM on the last convolutional feature map of the ResNet50V2 backbone.
 
-import cv2
+The overlay uses Pillow + matplotlib (no OpenCV), so there is one less native library
+competing with TensorFlow for CPU threads.
+"""
+import base64
+import io
+
 import numpy as np
 import tensorflow as tf
+from matplotlib import colormaps
+from PIL import Image
 
 from backend.model.build import BACKBONE_NAME
 
@@ -35,11 +41,11 @@ def make_heatmap(model: tf.keras.Model, image: np.ndarray, class_index: int) -> 
 
 def overlay_png_base64(heatmap: np.ndarray, rgb_uint8: np.ndarray, alpha: float = 0.4) -> str:
     h, w = rgb_uint8.shape[:2]
-    cam = cv2.resize(heatmap, (w, h))
-    colored = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)   # BGR
-    base_bgr = cv2.cvtColor(rgb_uint8, cv2.COLOR_RGB2BGR)
-    blended = cv2.addWeighted(colored, alpha, base_bgr, 1 - alpha, 0)
-    ok, buf = cv2.imencode(".png", blended)
-    if not ok:
-        raise RuntimeError("Could not encode heatmap")
-    return base64.b64encode(buf.tobytes()).decode("ascii")
+    cam = np.array(
+        Image.fromarray(np.uint8(255 * heatmap)).resize((w, h), Image.Resampling.BILINEAR)
+    ) / 255.0
+    colored = (colormaps["jet"](cam)[..., :3] * 255).astype(np.uint8)
+    blended = (alpha * colored + (1 - alpha) * rgb_uint8).astype(np.uint8)
+    buf = io.BytesIO()
+    Image.fromarray(blended).save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("ascii")

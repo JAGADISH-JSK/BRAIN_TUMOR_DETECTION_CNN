@@ -47,11 +47,11 @@ Full explanation, training flow and code map: [docs/ARCHITECTURE.md](docs/ARCHIT
 
 > Fill this section with YOUR numbers after running `python -m training.evaluate`.
 
-| Model | Test accuracy | Recall (tumor classes) | Notes |
-|---|---|---|---|
-| Small CNN baseline | _TBD_ | _TBD_ | trained from scratch |
-| ResNet50V2 | _TBD_ | _TBD_ | transfer learning |
-| ResNet50V2 + MC Dropout (accepted only) | _TBD_ | _TBD_ | coverage: _TBD_ |
+| Model                                   | Test accuracy | Recall (tumor classes) | Notes                |
+| --------------------------------------- | ------------- | ---------------------- | -------------------- |
+| Small CNN baseline                      | _TBD_         | _TBD_                  | trained from scratch |
+| ResNet50V2                              | _TBD_         | _TBD_                  | transfer learning    |
+| ResNet50V2 + MC Dropout (accepted only) | _TBD_         | _TBD_                  | coverage: _TBD_      |
 
 Plots (generated into `results/`): confusion matrix, accuracy vs. coverage, uncertainty histogram.
 
@@ -98,8 +98,21 @@ For a free GPU, train on Google Colab or Kaggle Notebooks and download the two f
 
 ## Run the app
 
+**One command (Windows):**
+
+```bash
+powershell -ExecutionPolicy Bypass -File .\start.ps1
+```
+
+This opens two windows: the Flask backend and the React frontend. Wait until the backend window
+prints `Ready. One prediction takes about ... s`, then open the link from the frontend window
+(usually http://localhost:5173).
+
+**Or manually, in two terminals:**
+
 ```bash
 # terminal 1 (from the repo root)
+$env:ENTROPY_THRESHOLD = "0.18"     # PowerShell; use export on macOS / Linux
 python -m backend.app
 
 # terminal 2
@@ -108,7 +121,8 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints (usually http://localhost:5173).
+Each prediction runs 20 stochastic passes plus a Grad-CAM pass on the CPU. The server warms the
+model up at start-up and reports the time per prediction in the UI.
 
 ### API
 
@@ -121,7 +135,12 @@ Open the URL Vite prints (usually http://localhost:5173).
   "uncertainty": 0.21,
   "threshold": 0.35,
   "needs_review": false,
-  "probabilities": {"glioma": 0.93, "meningioma": 0.04, "notumor": 0.01, "pituitary": 0.02},
+  "probabilities": {
+    "glioma": 0.93,
+    "meningioma": 0.04,
+    "notumor": 0.01,
+    "pituitary": 0.02
+  },
   "heatmap": "<base64 PNG>"
 }
 ```
