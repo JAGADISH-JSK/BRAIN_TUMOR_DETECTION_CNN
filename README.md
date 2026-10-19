@@ -20,7 +20,10 @@ disagree, the prediction is flagged **"Low confidence: needs expert review"** in
 - MC Dropout: T = 20 stochastic passes, normalised predictive entropy as the uncertainty score
 - Grad-CAM heatmap on the last convolutional feature map
 - Uncertainty-aware evaluation: accuracy vs. coverage, uncertainty of correct vs. wrong predictions
-- Flask REST API (`/predict`, `/health`) and React UI with a clear low-confidence warning
+- Flask REST API (`/predict`, `/health`)
+- React interface: drag-and-drop upload, live server status, a compare slider between the MRI and its Grad-CAM overlay,
+  an uncertainty gauge with the review limit, class probability bars, a clear low-confidence warning,
+  heatmap download, copy-summary, a session history, and light/dark themes
 
 ## Architecture
 
