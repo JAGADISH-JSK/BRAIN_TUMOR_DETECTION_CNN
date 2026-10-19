@@ -194,22 +194,18 @@ Plots are in the `results/` folder: confusion matrix, accuracy vs. coverage, unc
 
 "Glioma is the weakest class. The threshold was tuned on validation data and gave 96.6% accuracy on accepted test images, below its 98% validation target"
 
-## Demo
-
 ![glioma predicted as meningioma](docs/demo-glioma-misclassified.png)
 
-**True class: glioma. Model answer: meningioma.** Confidence 00.0%, uncertainty 0.00. A real mistake from the test set.
+**True class: glioma. Model answer: meningioma.** A real mistake from the test set.
 
 ![meningioma](docs/demo-meningioma.png)
 
-**True class: meningioma. Model answer: meningioma.** Confidence 00.0%, uncertainty 0.00.
+**True class: meningioma. Model answer: meningioma.**
 
-![notumor](docs/demo-notumor.png)
+![no tumor](docs/demo-notumor.png)
 
-**True class: notumor. Model answer: notumor.** Confidence 00.0%, uncertainty 0.00.
+**True class: notumor. Model answer: notumor.**
 
 ![pituitary](docs/demo-pituitary.png)
 
-**True class: pituitary. Model answer: pituitary.** Confidence 00.0%, uncertainty 0.00.
-
-Images were picked at random from the test set. Four examples show how the app behaves and do not measure accuracy.
+**True class: pituitary. Model answer: pituitary.**
