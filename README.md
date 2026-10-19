@@ -170,3 +170,27 @@ model up at start-up and reports the time per prediction in the UI.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+## Results
+
+Evaluated on 1,584 held-out test images (the Testing folder, never used for training).
+
+| Model | Test accuracy | Accuracy on accepted images | Coverage | Glioma recall |
+|---|---|---|---|---|
+| ResNet50V2, 1,200-image subset | 0.850 | 0.933 | 0.785 | 0.70 |
+| ResNet50V2, full training data | 0.941 | 0.966 | 0.936 | 0.826 |
+
+Uncertainty check: the mean uncertainty is 0.031 for correct predictions and 0.260 for wrong ones.
+With the entropy threshold at 0.28, the model answers 93.6% of images and deferred the rest for expert review.
+
+| Class | Images | Recall | Precision |
+|---|---|---|---|
+| glioma | 386 | 0.826 | 0.964 |
+| meningioma | 398 | 0.942 | 0.895 |
+| notumor | 400 | 1.000 | 0.941 |
+| pituitary | 400 | 0.990 | 0.968 |
+
+Plots are in the `results/` folder: confusion matrix, accuracy vs. coverage, uncertainty histogram.
+
+
+"Glioma is the weakest class. The threshold was tuned on validation data and gave 96.6% accuracy on accepted test images, below its 98% validation target"
