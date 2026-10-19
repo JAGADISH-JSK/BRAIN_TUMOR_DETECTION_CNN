@@ -175,22 +175,41 @@ MIT, see [LICENSE](LICENSE).
 
 Evaluated on 1,584 held-out test images (the Testing folder, never used for training).
 
-| Model | Test accuracy | Accuracy on accepted images | Coverage | Glioma recall |
-|---|---|---|---|---|
-| ResNet50V2, 1,200-image subset | 0.850 | 0.933 | 0.785 | 0.70 |
-| ResNet50V2, full training data | 0.941 | 0.966 | 0.936 | 0.826 |
+| Model                          | Test accuracy | Accuracy on accepted images | Coverage | Glioma recall |
+| ------------------------------ | ------------- | --------------------------- | -------- | ------------- |
+| ResNet50V2, 1,200-image subset | 0.850         | 0.933                       | 0.785    | 0.70          |
+| ResNet50V2, full training data | 0.941         | 0.966                       | 0.936    | 0.826         |
 
 Uncertainty check: the mean uncertainty is 0.031 for correct predictions and 0.260 for wrong ones.
 With the entropy threshold at 0.28, the model answers 93.6% of images and deferred the rest for expert review.
 
-| Class | Images | Recall | Precision |
-|---|---|---|---|
-| glioma | 386 | 0.826 | 0.964 |
-| meningioma | 398 | 0.942 | 0.895 |
-| notumor | 400 | 1.000 | 0.941 |
-| pituitary | 400 | 0.990 | 0.968 |
+| Class      | Images | Recall | Precision |
+| ---------- | ------ | ------ | --------- |
+| glioma     | 386    | 0.826  | 0.964     |
+| meningioma | 398    | 0.942  | 0.895     |
+| notumor    | 400    | 1.000  | 0.941     |
+| pituitary  | 400    | 0.990  | 0.968     |
 
 Plots are in the `results/` folder: confusion matrix, accuracy vs. coverage, uncertainty histogram.
 
-
 "Glioma is the weakest class. The threshold was tuned on validation data and gave 96.6% accuracy on accepted test images, below its 98% validation target"
+
+## Demo
+
+![glioma predicted as meningioma](docs/demo-glioma-misclassified.png)
+
+**True class: glioma. Model answer: meningioma.** Confidence 00.0%, uncertainty 0.00. A real mistake from the test set.
+
+![meningioma](docs/demo-meningioma.png)
+
+**True class: meningioma. Model answer: meningioma.** Confidence 00.0%, uncertainty 0.00.
+
+![notumor](docs/demo-notumor.png)
+
+**True class: notumor. Model answer: notumor.** Confidence 00.0%, uncertainty 0.00.
+
+![pituitary](docs/demo-pituitary.png)
+
+**True class: pituitary. Model answer: pituitary.** Confidence 00.0%, uncertainty 0.00.
+
+Images were picked at random from the test set. Four examples show how the app behaves and do not measure accuracy.
