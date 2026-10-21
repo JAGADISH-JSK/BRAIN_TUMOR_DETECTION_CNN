@@ -1,4 +1,4 @@
-# Failure-Aware Brain Tumor Detection
+# # Brain Tumor Detection from MRI using Deep Learning
 
 A deep-learning system that classifies brain MRI slices **and knows when it should not answer**.
 It combines a ResNet50V2 classifier, Monte Carlo Dropout uncertainty, and Grad-CAM explanations,
