@@ -19,3 +19,5 @@ frontend/dist/
 .vscode/
 
 backup/
+
+data_small/
