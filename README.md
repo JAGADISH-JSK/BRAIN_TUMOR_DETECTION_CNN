@@ -1,211 +1,227 @@
-# # Brain Tumor Detection from MRI using Deep Learning
+# 🧠 Brain Tumor Detection Using CNN
 
-A deep-learning system that classifies brain MRI slices **and knows when it should not answer**.
-It combines a ResNet50V2 classifier, Monte Carlo Dropout uncertainty, and Grad-CAM explanations,
-served through a Flask API and a React interface.
+An AI-powered brain MRI image classification project that uses a Convolutional Neural Network (CNN) to classify brain MRI images into four categories: **Glioma, Meningioma, Pituitary Tumor, and No Tumor**.
 
-> **Educational project. Not a medical device and not for diagnosis.**
+The project combines deep learning with a Flask backend and a React frontend to provide an interactive interface for image uploads, model predictions, confidence scores, class probabilities, and uncertainty estimation.
 
-<!-- Add a demo GIF or screenshot here:  ![demo](docs/demo.gif) -->
+## 📸 Project Preview
 
-## Why "failure-aware"?
+### 1. Application Dashboard
 
-A normal classifier always returns a label, even when it is wrong. This system runs each image
-through the network several times with dropout active (Monte Carlo Dropout). If the passes
-disagree, the prediction is flagged **"Low confidence: needs expert review"** instead of being shown as fact.
+![Application Dashboard](screenshots/dashboard.png)
 
-## Features
+### 2. MRI Image Upload
 
-- Transfer learning with ResNet50V2 (ImageNet), two-stage training (head, then fine-tune)
-- MC Dropout: T = 20 stochastic passes, normalised predictive entropy as the uncertainty score
-- Grad-CAM heatmap on the last convolutional feature map
-- Uncertainty-aware evaluation: accuracy vs. coverage, uncertainty of correct vs. wrong predictions
-- Flask REST API (`/predict`, `/health`)
-- React interface: drag-and-drop upload, live server status, a compare slider between the MRI and its Grad-CAM overlay,
-  an uncertainty gauge with the review limit, class probability bars, a clear low-confidence warning,
-  heatmap download, copy-summary, a session history, and light/dark themes
+![MRI Image Upload](screenshots/image_upload.png)
 
-## Architecture
+### 3. Prediction Results
 
-```mermaid
-flowchart LR
-    U[User] --> F[React frontend]
-    F -->|"POST /predict (image)"| B[Flask API]
-    B --> P[Preprocess to 224x224 RGB]
-    P --> M[ResNet50V2 with dropout head]
-    M -->|"T = 20 passes, dropout ON"| E[Mean probabilities and entropy]
-    M --> G[Grad-CAM heatmap]
-    E --> D{Entropy above threshold?}
-    D -->|Yes| R[Needs expert review]
-    D -->|No| C[Class and confidence]
-    R --> J[JSON response]
-    C --> J
-    G --> J
-    J --> F
+![Prediction Results](screenshots/prediction_result.png)
+
+## 🎥 Project Demonstration
+
+Watch the demonstration to see how an MRI image is uploaded, processed by the CNN model, and displayed with its prediction results.
+
+**[▶ Watch the Project Demo](demo/project_demo.mp4)**
+
+> Replace the paths above with your actual screenshots and video. GitHub may show an MP4 as a downloadable file rather than an embedded video player. Alternatively, upload the demo to YouTube and link it here.
+
+## ✨ Features
+
+- **Four-Class Classification:** Classifies MRI images into glioma, meningioma, pituitary tumor, and no-tumor categories.
+- **CNN-Based Prediction:** Uses a trained Convolutional Neural Network for image classification.
+- **Interactive Web Interface:** Upload and preview MRI images through a React frontend.
+- **Prediction Confidence:** Displays the confidence score associated with a model prediction.
+- **Class Probabilities:** Shows the model's scores for the supported classes.
+- **Uncertainty Estimation:** Uses prediction entropy and a configurable threshold to flag uncertain outputs.
+- **Flask REST API:** Connects the frontend to the trained model.
+- **Scan History:** Displays recent predictions during the current session.
+- **Visual Explanation Support:** Supports heatmap display when the backend provides one.
+- **Responsive Design:** Provides a dashboard designed for desktop and mobile screens.
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Core programming language |
+| TensorFlow | Deep learning framework |
+| Keras | CNN model development and inference |
+| NumPy | Numerical operations |
+| Pillow | Image processing |
+| Flask | Backend API |
+| React | Frontend interface |
+| JavaScript | Frontend functionality |
+| CSS | User interface styling |
+| Kaggle | Model training and experimentation |
+| Git and GitHub | Version control and project hosting |
+
+## 🧠 Model Performance
+
+The model achieved the following results on the test dataset.
+
+| Evaluation Metric | Result |
+|---|---:|
+| Test Accuracy | 94.3% |
+| Accepted Prediction Coverage | 96.9% |
+| Accuracy on Accepted Predictions | 96.0% |
+
+### Classification Report
+
+| Class | Precision | Recall | F1-Score |
+|---|---:|---:|---:|
+| Glioma | 99.0% | 80.6% | 88.9% |
+| Meningioma | 86.4% | 97.2% | 91.5% |
+| No Tumor | 96.2% | 100.0% | 98.0% |
+| Pituitary | 97.5% | 99.0% | 98.3% |
+
+**Note:** These are the reported results from the project's test evaluation. Accepted prediction coverage represents the proportion of predictions passing the uncertainty filter. Accuracy on accepted predictions is measured only on that subset. Results may vary on images from other sources.
+
+## 📂 Project Structure
+
+```text
+BRAIN_TUMOR_DETECTION_CNN/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── CompareViewer.jsx
+│   │   │   ├── ProbabilityBars.jsx
+│   │   │   └── UncertaintyGauge.jsx
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   └── main.jsx
+│   └── package.json
+│
+├── training/
+│
+├── weights/
+│   ├── brain_tumor_model.keras
+│   └── class_names.json
+│
+├── screenshots/
+│   ├── dashboard.png
+│   ├── image_upload.png
+│   └── prediction_result.png
+│
+├── demo/
+│   └── project_demo.mp4
+│
+├── app.py
+├── requirements.txt
+├── start.ps1
+└── README.md
 ```
 
-Full explanation, training flow and code map: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+*This is an example structure. Adjust it to match the files and folders in your actual repository.*
 
-## Results
+## ⚙️ Installation and Setup
 
-> Fill this section with YOUR numbers after running `python -m training.evaluate`.
+### Prerequisites
 
-| Model                                   | Test accuracy | Recall (tumor classes) | Notes                |
-| --------------------------------------- | ------------- | ---------------------- | -------------------- |
-| Small CNN baseline                      | _TBD_         | _TBD_                  | trained from scratch |
-| ResNet50V2                              | _TBD_         | _TBD_                  | transfer learning    |
-| ResNet50V2 + MC Dropout (accepted only) | _TBD_         | _TBD_                  | coverage: _TBD_      |
+- Python installed on your system
+- Node.js and npm
+- Git
+- A compatible trained CNN model
 
-Plots (generated into `results/`): confusion matrix, accuracy vs. coverage, uncertainty histogram.
+### Step 1: Clone the Repository
 
-## Dataset
-
-Use a 4-class brain MRI dataset (glioma, meningioma, pituitary, no tumor), for example the
-Kaggle "Brain Tumor MRI Dataset". Arrange it like this:
-
-```
-data/
-  Training/ glioma/ meningioma/ notumor/ pituitary/
-  Testing/  glioma/ meningioma/ notumor/ pituitary/
+```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd BRAIN_TUMOR_DETECTION_CNN
 ```
 
-Check for duplicate or near-duplicate images between Training and Testing, because leakage
-inflates accuracy. `python -m training.dedupe data/Training` removes exact duplicates only.
+Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual GitHub repository URL.
 
-## Setup
-
-Requires Python 3.10 to 3.12 and Node.js (LTS).
+### Step 2: Create a Python Virtual Environment
 
 ```bash
 python -m venv venv
-venv\Scripts\activate            # Windows
-# source venv/bin/activate       # macOS / Linux
+```
+
+Activate it on Windows PowerShell:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+### Step 3: Install Backend Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Train and evaluate
+### Step 4: Check the Model Files
 
-```bash
-python -m training.train --data-dir data
-python -m training.evaluate --data-dir data
+Ensure that the trained model and class names file are available at the locations expected by your backend:
+
+```text
+weights/
+├── brain_tumor_model.keras
+└── class_names.json
 ```
 
-Training writes `weights/brain_tumor_model.keras` and `weights/class_names.json`.
-Evaluation prints a validation-chosen entropy threshold. Set it before starting the API:
+If your actual model is stored elsewhere, update the path in the backend configuration accordingly.
+
+### Step 5: Start the Flask Backend
 
 ```bash
-set ENTROPY_THRESHOLD=0.30       # Windows (use export on macOS / Linux)
+python app.py
 ```
 
-For a free GPU, train on Google Colab or Kaggle Notebooks and download the two files in `weights/`.
+Keep the backend terminal running. The frontend is configured to use `http://127.0.0.1:5000` by default unless `VITE_API_URL` is set.
 
-## Run the app
+### Step 6: Start the React Frontend
 
-**One command (Windows):**
-
-```bash
-powershell -ExecutionPolicy Bypass -File .\start.ps1
-```
-
-This opens two windows: the Flask backend and the React frontend. Wait until the backend window
-prints `Ready. One prediction takes about ... s`, then open the link from the frontend window
-(usually http://localhost:5173).
-
-**Or manually, in two terminals:**
+Open a second terminal:
 
 ```bash
-# terminal 1 (from the repo root)
-$env:ENTROPY_THRESHOLD = "0.18"     # PowerShell; use export on macOS / Linux
-python -m backend.app
-
-# terminal 2
 cd frontend
 npm install
 npm run dev
 ```
 
-Each prediction runs 20 stochastic passes plus a Grad-CAM pass on the CPU. The server warms the
-model up at start-up and reports the time per prediction in the UI.
+Open the local development URL displayed in the terminal.
 
-### API
+## 🔍 How It Works
 
-`POST /predict` with form field `image`:
+1. **Image Upload:** The user selects a brain MRI image through the frontend.
+2. **Image Preprocessing:** The backend prepares the image in the format expected by the trained model.
+3. **CNN Inference:** The model processes the image and generates classification scores.
+4. **Prediction:** The application identifies the class with the highest model score.
+5. **Confidence Analysis:** The interface displays the prediction confidence and available class probabilities.
+6. **Uncertainty Estimation:** An entropy-based threshold can flag predictions that require additional caution.
+7. **Result Display:** The frontend displays the prediction and any additional information returned by the backend.
 
-```json
-{
-  "label": "glioma",
-  "confidence": 0.93,
-  "uncertainty": 0.21,
-  "threshold": 0.35,
-  "needs_review": false,
-  "probabilities": {
-    "glioma": 0.93,
-    "meningioma": 0.04,
-    "notumor": 0.01,
-    "pituitary": 0.02
-  },
-  "heatmap": "<base64 PNG>"
-}
-```
+## 📊 Uncertainty Estimation
 
-## Limitations
+The project uses prediction entropy to estimate uncertainty in the model's probability distribution.
 
-- Uncertainty from MC Dropout is an approximation and can be poorly calibrated; check the plots.
-- Public datasets are small and may contain duplicates or source bias; results may not transfer to real clinical data.
-- Grad-CAM shows where the model looked, not proof that the model is right.
-- The threshold is a research setting, not a clinical safety limit.
+An uncertainty threshold is used to flag certain predictions for cautious interpretation. This provides an additional signal beyond the predicted class alone.
 
-## Related work and inspiration
+The uncertainty score is a model-based indicator and does not establish whether a prediction is medically correct.
 
-- Brain-Tumor-Detection-and-Classification-Using-CNN (Raghu20git): EfficientNet-B0 + MC Dropout + Grad-CAM notebook
-- Brain-Tumor-Detection (MohamedAliHabib): small CNN baseline and README structure
-- Brain-Tumor-Classification-Using-Deep-Learning-Algorithms (SartajBhuvaji): model comparison
+## 🚀 Future Improvements
 
-## Team
+- Integrate Grad-CAM to highlight image regions that influence predictions.
+- Improve recall for classes with comparatively weaker results.
+- Evaluate the model on independent MRI datasets.
+- Add confusion matrix and per-class performance visualizations.
+- Generate downloadable prediction reports.
+- Improve API validation and error handling.
+- Deploy the application using an appropriate hosting platform.
+- Add automated testing for preprocessing and inference.
 
-- <YOUR NAME>: <what you built>
-- <TEAMMATE>: <what they built>
-- Guide: <FACULTY NAME>
+## 🔮 Applications
 
-## License
+- Educational demonstrations of CNN-based image classification.
+- Experimentation with medical image preprocessing and deep learning.
+- Exploring uncertainty estimation in machine learning.
+- Demonstrating the integration of an ML model with a web application.
 
-MIT, see [LICENSE](LICENSE).
+## ⚠️ Disclaimer
 
-## Results
+This project is intended for educational and research purposes only. It is **not a medical diagnostic tool** and must not be used to diagnose or rule out a brain tumor. Model predictions can be incorrect and must not replace evaluation by a qualified medical professional.
 
-Evaluated on 1,584 held-out test images (the Testing folder, never used for training).
+## 👨‍💻 Author
 
-| Model                          | Test accuracy | Accuracy on accepted images | Coverage | Glioma recall |
-| ------------------------------ | ------------- | --------------------------- | -------- | ------------- |
-| ResNet50V2, 1,200-image subset | 0.850         | 0.933                       | 0.785    | 0.70          |
-| ResNet50V2, full training data | 0.941         | 0.966                       | 0.936    | 0.826         |
-
-Uncertainty check: the mean uncertainty is 0.031 for correct predictions and 0.260 for wrong ones.
-With the entropy threshold at 0.28, the model answers 93.6% of images and deferred the rest for expert review.
-
-| Class      | Images | Recall | Precision |
-| ---------- | ------ | ------ | --------- |
-| glioma     | 386    | 0.826  | 0.964     |
-| meningioma | 398    | 0.942  | 0.895     |
-| notumor    | 400    | 1.000  | 0.941     |
-| pituitary  | 400    | 0.990  | 0.968     |
-
-Plots are in the `results/` folder: confusion matrix, accuracy vs. coverage, uncertainty histogram.
-
-"Glioma is the weakest class. The threshold was tuned on validation data and gave 96.6% accuracy on accepted test images, below its 98% validation target"
-
-![meningioma](docs/demo-meningioma.png)
-
-**True class: meningioma. Model answer: meningioma.**
-
-![no tumor](docs/demo-notumor.png)
-
-**True class: notumor. Model answer: notumor.**
-
-![pituitary](docs/demo-pituitary.png)
-
-**True class: pituitary. Model answer: pituitary.**
-
-![glioma predicted as meningioma](docs/demo-glioma-misclassified.png)
-
-**True class: glioma. Model answer: meningioma.** A real mistake from the test set.
+Developed as an Artificial Intelligence and Machine Learning project to explore deep learning, brain MRI image classification, model evaluation, uncertainty estimation, and full-stack AI application development.
