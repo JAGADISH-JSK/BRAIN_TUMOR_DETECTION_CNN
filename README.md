@@ -14,15 +14,15 @@ Watch the demonstration of the Brain Tumor Detection Using CNN application, incl
 
 ### 1. Application Dashboard
 
-![Application Dashboard](screenshots/dashboard.png)
+![Application Dashboard](screenshots/glioma_2x.png)
 
 ### 2. MRI Image Upload
 
-![MRI Image Upload](screenshots/image_upload.png)
+![MRI Image Upload](screenshots/meningioma_2x.png)
 
 ### 3. Brain Tumor Prediction Results
 
-![Prediction Results](screenshots/prediction_result.png)
+![Prediction Results](screenshots/pituitary_2x.png)
 
 ## ✨ Features
 
