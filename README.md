@@ -30,6 +30,8 @@ The goal is to demonstrate how a trained CNN can be integrated into a real-world
 - Responsive UI for desktop and mobile devices
 - Heatmap comparison support
 
+![Glioma Class](screenshots/glioma_2x.png)
+
 ## Demo
 
 <video controls width="900">
@@ -39,33 +41,33 @@ The goal is to demonstrate how a trained CNN can be integrated into a real-world
 
 ## Tech Stack
 
-| Layer | Technologies |
-| --- | --- |
-| Deep learning | TensorFlow, Keras |
-| Data processing | NumPy, Pandas, Pillow |
-| Backend | Flask, Flask-CORS |
-| Frontend | React, JavaScript, CSS |
+| Layer            | Technologies             |
+| ---------------- | ------------------------ |
+| Deep learning    | TensorFlow, Keras        |
+| Data processing  | NumPy, Pandas, Pillow    |
+| Backend          | Flask, Flask-CORS        |
+| Frontend         | React, JavaScript, CSS   |
 | Model evaluation | scikit-learn, Matplotlib |
-| Development | Python, Git, GitHub |
+| Development      | Python, Git, GitHub      |
 
 ## Model Performance
 
 The trained model achieved the following results on the test dataset:
 
-| Metric | Value |
-| --- | ---: |
-| Test Accuracy | 94.3% |
-| Accepted Prediction Coverage | 96.9% |
+| Metric                           | Value |
+| -------------------------------- | ----: |
+| Test Accuracy                    | 94.3% |
+| Accepted Prediction Coverage     | 96.9% |
 | Accuracy on Accepted Predictions | 96.0% |
 
 ### Classification Report
 
-| Class | Precision | Recall | F1-Score |
-| --- | ---: | ---: | ---: |
-| Glioma | 99.0% | 80.6% | 88.9% |
-| Meningioma | 86.4% | 97.2% | 91.5% |
-| No Tumor | 96.2% | 100.0% | 98.0% |
-| Pituitary | 97.5% | 99.0% | 98.3% |
+| Class      | Precision | Recall | F1-Score |
+| ---------- | --------: | -----: | -------: |
+| Glioma     |     99.0% |  80.6% |    88.9% |
+| Meningioma |     86.4% |  97.2% |    91.5% |
+| No Tumor   |     96.2% | 100.0% |    98.0% |
+| Pituitary  |     97.5% |  99.0% |    98.3% |
 
 > These metrics are reported from the model evaluation and should be interpreted as research-oriented results rather than clinical diagnosis metrics.
 
