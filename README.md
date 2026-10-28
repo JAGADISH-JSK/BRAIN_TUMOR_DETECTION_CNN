@@ -1,156 +1,161 @@
 # 🧠 Brain Tumor Detection Using CNN
 
-An AI-powered brain MRI image classification project that uses a **Convolutional Neural Network (CNN)** to classify brain MRI images into four categories: **Glioma, Meningioma, Pituitary Tumor, and No Tumor**.
+An AI-powered web application for detecting brain tumors from MRI scans using a Convolutional Neural Network (CNN). The project combines deep learning inference with a Flask backend and a React frontend to provide an interactive experience for image upload, prediction, confidence scoring, and uncertainty estimation.
 
-The project integrates deep learning with a Flask backend and a React frontend to provide an interactive interface for MRI image uploads, predictions, confidence scores, class probabilities, and uncertainty estimation.
+<p align="center">
+  <img src="screenshots/glioma_2x.png" alt="Brain tumor detection dashboard" width="900" />
+</p>
 
-## 🎥 Project Demo
+## Overview
 
-Watch the demonstration of the Brain Tumor Detection Using CNN application, including MRI image upload, model prediction, confidence scores, and classification results.
+This project is designed to classify brain MRI images into four categories:
 
-▶ **[Watch the Project Demo](demo/project_demo.mp4)**
+- Glioma
+- Meningioma
+- Pituitary tumor
+- No tumor
 
-## 📸 Project Screenshots
+It aims to demonstrate how a trained CNN can be integrated into a real-world web application for medical image classification, while also exposing model uncertainty to help users interpret results more carefully.
 
-### 1. Application Dashboard
+## Features
 
-![Application Dashboard](screenshots/glioma_2x.png)
+- Four-class brain tumor classification
+- CNN-based prediction pipeline using TensorFlow/Keras
+- Easy MRI image upload from the frontend
+- Prediction confidence display
+- Per-class probability visualization
+- Uncertainty estimation using entropy-based filtering
+- Flask REST API for model inference
+- React dashboard for prediction results
+- Support for heatmap visualization and result comparison tools
+- Responsive UI for desktop and mobile devices
 
-### 2. MRI Image Upload
+## Demo
 
-![MRI Image Upload](screenshots/meningioma_2x.png)
+Watch the application in action:
 
-### 3. Brain Tumor Prediction Results
+- [Project Demo](demo/project_demo.mp4)
 
-![Prediction Results](screenshots/pituitary_2x.png)
+## Tech Stack
 
-## ✨ Features
+| Layer | Technologies |
+| --- | --- |
+| Deep learning | TensorFlow, Keras |
+| Data handling | NumPy, Pandas, Pillow |
+| Backend | Flask, Flask-CORS |
+| Frontend | React, JavaScript, CSS |
+| Model evaluation | scikit-learn, Matplotlib |
+| Development | Python, Git, GitHub |
 
-- **Four-Class Classification:** Classifies brain MRI images into glioma, meningioma, pituitary tumor, and no-tumor categories.
-- **CNN-Based Prediction:** Uses a trained Convolutional Neural Network for image classification.
-- **Interactive Web Interface:** Upload and preview MRI images through a React frontend.
-- **Prediction Confidence:** Displays the model's confidence score for its prediction.
-- **Class Probabilities:** Displays the model's scores for the supported classes.
-- **Uncertainty Estimation:** Uses prediction entropy and a configurable threshold to flag uncertain outputs.
-- **Flask REST API:** Connects the frontend with the trained model.
-- **Scan History:** Displays recent predictions during the current session.
-- **Heatmap Support:** Supports visual explanation display when a heatmap is provided by the backend.
-- **Responsive Design:** Provides a dashboard designed for desktop and mobile screens.
+## Model Performance
 
-## 🛠️ Technologies Used
+The trained model achieved the following evaluation results on the test dataset:
 
-| Technology     | Purpose                             |
-| -------------- | ----------------------------------- |
-| Python         | Core programming language           |
-| TensorFlow     | Deep learning framework             |
-| Keras          | CNN model development and inference |
-| NumPy          | Numerical operations                |
-| Pillow         | Image processing                    |
-| Flask          | Backend API                         |
-| React          | Frontend interface                  |
-| JavaScript     | Frontend functionality              |
-| CSS            | User interface styling              |
-| Kaggle         | Model training and experimentation  |
-| Git and GitHub | Version control and project hosting |
-
-## 🧠 Model Performance
-
-The model achieved the following results on the test dataset.
-
-| Evaluation Metric                | Result |
-| -------------------------------- | -----: |
-| Test Accuracy                    |  94.3% |
-| Accepted Prediction Coverage     |  96.9% |
-| Accuracy on Accepted Predictions |  96.0% |
+| Metric | Value |
+| --- | ---: |
+| Test Accuracy | 94.3% |
+| Accepted Prediction Coverage | 96.9% |
+| Accuracy on Accepted Predictions | 96.0% |
 
 ### Classification Report
 
-| Class      | Precision | Recall | F1-Score |
-| ---------- | --------: | -----: | -------: |
-| Glioma     |     99.0% |  80.6% |    88.9% |
-| Meningioma |     86.4% |  97.2% |    91.5% |
-| No Tumor   |     96.2% | 100.0% |    98.0% |
-| Pituitary  |     97.5% |  99.0% |    98.3% |
+| Class | Precision | Recall | F1-Score |
+| --- | ---: | ---: | ---: |
+| Glioma | 99.0% | 80.6% | 88.9% |
+| Meningioma | 86.4% | 97.2% | 91.5% |
+| No Tumor | 96.2% | 100.0% | 98.0% |
+| Pituitary | 97.5% | 99.0% | 98.3% |
 
-**Note:** These are the reported test evaluation results. Accepted prediction coverage represents the proportion of predictions that pass the uncertainty filter. Accuracy on accepted predictions is calculated only for that subset. Actual performance may vary on MRI images from other sources.
+> These metrics are reported from the model evaluation and should be interpreted as research-oriented results, not clinical diagnosis metrics.
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 BRAIN_TUMOR_DETECTION_CNN/
-│
+├── backend/
+│   ├── model/
+│   ├── utils/
+│   ├── __init__.py
+│   ├── app.py
+│   └── config.py
+├── data/
+├── demo/
+│   └── project_demo.mp4
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── CompareViewer.jsx
-│   │   │   ├── ProbabilityBars.jsx
-│   │   │   └── UncertaintyGauge.jsx
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   └── main.jsx
-│   └── package.json
-│
+│   ├── package.json
+│   └── vite.config.js
+├── screenshots/
+│   ├── glioma_2x.png
+│   ├── meningioma_2x.png
+│   └── pituitary_2x.png
 ├── training/
-│
 ├── weights/
 │   ├── brain_tumor_model.keras
 │   └── class_names.json
-│
-├── screenshots/
-│   ├── dashboard.png
-│   ├── image_upload.png
-│   └── prediction_result.png
-│
-├── demo/
-│   └── project_demo.mp4
-│
-├── app.py
+├── .gitignore
+├── LICENSE
+├── README.md
 ├── requirements.txt
 ├── start.ps1
-└── README.md
+├── app.py
+└── make_small.py
 ```
 
-_The structure above is illustrative. Adjust the names and paths to match your actual repository._
-
-## ⚙️ Installation and Setup
+## Installation
 
 ### Prerequisites
 
-- Python
-- Node.js and npm
+- Python 3.9+
+- Node.js 18+
+- npm
 - Git
-- A compatible trained CNN model
+- A trained model file in the `weights/` directory
 
-### Step 1: Clone the Repository
+### 1) Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/JAGADISH-JSK/BRAIN_TUMOR_DETECTION_CNN.git
 cd BRAIN_TUMOR_DETECTION_CNN
 ```
 
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual GitHub repository URL.
-
-### Step 2: Create a Python Virtual Environment
+### 2) Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate it in Windows PowerShell:
+Activate the environment:
+
+- Windows PowerShell:
 
 ```powershell
 .\venv\Scripts\Activate.ps1
 ```
 
-### Step 3: Install Backend Dependencies
+- macOS/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+### 3) Install backend dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Verify the Model Files
+### 4) Install frontend dependencies
 
-Ensure that the trained model and class names file are available at the paths expected by your backend.
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+### 5) Verify model files
+
+Ensure that the trained CNN weights and class labels are available:
 
 ```text
 weights/
@@ -158,68 +163,133 @@ weights/
 └── class_names.json
 ```
 
-If your model is stored in another directory, update the model path in your backend configuration.
+If your model is stored in a different path, update the backend configuration accordingly.
 
-### Step 5: Start the Flask Backend
+## Running the Application
+
+### Option 1: Use the project launcher
+
+From the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start.ps1
+```
+
+This script helps launch the backend and frontend together.
+
+### Option 2: Run manually
+
+Start the Flask backend:
 
 ```bash
 python app.py
 ```
 
-Keep the backend terminal running. The frontend uses `http://127.0.0.1:5000` by default unless the `VITE_API_URL` environment variable is configured.
-
-### Step 6: Start the React Frontend
-
-Open another terminal:
+In a new terminal, start the frontend:
 
 ```bash
 cd frontend
-npm install
 npm run dev
 ```
 
-Open the local development URL displayed in the terminal.
+Then open the local URL shown in the terminal, typically:
 
-## 🔍 How It Works
+```text
+http://localhost:5173
+```
 
-1. **Image Upload:** The user selects a brain MRI image through the frontend.
-2. **Image Preprocessing:** The backend prepares the image according to the trained model's input requirements.
-3. **CNN Inference:** The trained CNN processes the image and generates classification scores.
-4. **Prediction:** The model identifies the class with the highest score.
-5. **Confidence Analysis:** The application displays the prediction confidence and available class probabilities.
-6. **Uncertainty Estimation:** Entropy-based filtering can flag predictions that require additional caution.
-7. **Results Display:** The frontend presents the model output and any additional information provided by the backend.
+## How It Works
 
-## 📊 Uncertainty Estimation
+1. User uploads a brain MRI image from the frontend.
+2. The backend preprocesses the image to match the model input format.
+3. The CNN predicts class probabilities for all supported categories.
+4. The highest probability is selected as the main prediction.
+5. Confidence and uncertainty metrics are computed.
+6. The frontend displays the class label, confidence, probability distribution, and uncertainty information.
 
-The project uses prediction entropy to estimate uncertainty in the model's output probability distribution.
+## API Usage
 
-A configurable threshold is used to flag predictions with higher uncertainty. This provides an additional indicator to help distinguish predictions that pass the chosen threshold from those that do not.
+The backend exposes an inference endpoint for image-based prediction.
 
-The uncertainty score is a model-based indicator, not a measure of clinical certainty.
+### Endpoint
 
-## 🚀 Future Improvements
+```http
+POST /predict
+```
 
-- Integrate Grad-CAM to highlight image regions that influence predictions.
-- Improve recall for classes with comparatively weaker results.
-- Evaluate the model on independent MRI datasets.
-- Add confusion matrix and per-class performance visualizations.
-- Generate downloadable prediction reports.
-- Improve API validation and error handling.
-- Deploy the application using an appropriate hosting platform.
-- Add automated tests for image preprocessing and inference.
+### Example request using Python
 
-## 🔮 Applications
+```python
+import requests
 
-- Educational demonstrations of CNN-based image classification.
-- Experimentation with medical image preprocessing and deep learning.
-- Exploring uncertainty estimation in machine learning.
-- Demonstrating the integration of an ML model with a web application.
+url = "http://127.0.0.1:5000/predict"
+files = {"image": open("sample.jpg", "rb")}
 
-## ⚠️ Disclaimer
+response = requests.post(url, files=files)
+print(response.json())
+```
 
-This project is intended for educational and research purposes only. It is **not a medical diagnostic tool** and must not be used to diagnose or rule out brain tumors. Model predictions can be incorrect and must not replace evaluation by a qualified medical professional.
+### Example response
 
-## 👨‍💻 Author
+```json
+{
+  "label": "glioma",
+  "confidence": 0.91,
+  "uncertainty": 0.12,
+  "threshold": 0.35,
+  "needs_review": false,
+  "probabilities": {
+    "glioma": 0.91,
+    "meningioma": 0.03,
+    "notumor": 0.02,
+    "pituitary": 0.04
+  }
+}
+```
 
-Developed as an Artificial Intelligence and Machine Learning project to explore deep learning, brain MRI image classification, model evaluation, uncertainty estimation, and full-stack AI application development.
+## Uncertainty Estimation
+
+This project includes entropy-based uncertainty estimation to help flag low-confidence or ambiguous predictions. The threshold can be configured to control when a prediction should be marked for review.
+
+```python
+ENTROPY_THRESHOLD = float(os.environ.get("ENTROPY_THRESHOLD", 0.35))
+```
+
+This is an auxiliary signal for interpretation and not a clinical measure of certainty.
+
+## Future Improvements
+
+- Add Grad-CAM or saliency map visualizations
+- Improve recall for difficult classes
+- Evaluate on more diverse MRI datasets
+- Add confusion matrix and analytics dashboards
+- Improve API validation and logging
+- Deploy the app to a cloud hosting platform
+- Add automated tests for preprocessing and inference
+
+## Use Cases
+
+- Educational deep learning projects
+- MRI image classification demos
+- AI + healthcare experimentation
+- Full-stack ML application prototyping
+
+## Disclaimer
+
+This project is intended for educational and research purposes only. It is not a medical diagnostic tool and should not be used to diagnose or rule out brain tumors. Any prediction should be reviewed by a qualified medical professional.
+
+## Author
+
+This project was developed to explore CNN-based medical image classification, uncertainty estimation, and full-stack deployment of an AI model.
+
+## License
+
+This project is available under the [MIT License](LICENSE).
+
+## Project Links
+
+- GitHub Repository: https://github.com/JAGADISH-JSK/BRAIN_TUMOR_DETECTION_CNN
+- Demo Folder: `demo/project_demo.mp4`
+- Model Weights: `weights/brain_tumor_model.keras`
+
+If you want, I can also make this README more portfolio-style, more academic, or more concise for GitHub.
